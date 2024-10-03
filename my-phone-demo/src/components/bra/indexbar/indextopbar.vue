@@ -1,0 +1,27 @@
+<template>
+    <div>
+        <van-tabs v-model:active="active" sticky>
+            <van-tab to="" title="关注">
+                <div>
+                    <div></div>
+                </div>
+            </van-tab>
+            <van-tab title="首页">
+                <homecard />
+
+            </van-tab>
+            <van-tab to="" title="热门">热门</van-tab>
+            <van-tab to="" title="话题">话题</van-tab>
+            <van-tab to="" title="信息">信息</van-tab>
+        </van-tabs>
+    </div>
+
+</template>
+
+<script setup>
+import { ref } from 'vue';
+
+const active = ref(1);
+</script>
+
+<style lang="css" scoped></style>

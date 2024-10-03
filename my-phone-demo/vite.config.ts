@@ -19,8 +19,8 @@ export default defineConfig({
     }),
   ],
   server: {
-    host: '192.168.101.1',  // 监听所有 IP 地址
-    port: 8056       // 可自定义端口
+    host: '0.0.0.0',  // 监听所有 IP 地址
+    port: 8080       // 可自定义端口
   },
   // ↓解析配置
   resolve: {
