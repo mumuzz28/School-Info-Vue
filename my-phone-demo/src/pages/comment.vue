@@ -47,9 +47,7 @@ const finished = ref(false);
 const newComment = ref('');
 
 // 返回上一页
-const goBack = () => {
-    router.go(-1);
-};
+const goBack = () => history.back();
 
 // 模拟加载评论
 const loadComments = () => {

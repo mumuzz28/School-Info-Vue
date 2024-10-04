@@ -1,7 +1,5 @@
 <template>
-    <div style="z-index: 1001;">
-        <P>我的</P>
-    </div>
+    <P>我的</P>
 </template>
 
 <script setup>

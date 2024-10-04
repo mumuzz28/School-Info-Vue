@@ -7,17 +7,11 @@
                 <div class="username">用户名</div>
                 <div class="post-time">1小时前</div>
             </div>
+            <div class="post-time">1小时前</div>
         </div>
 
         <!-- 帖子内容 -->
         <div class="post-content">
-            Freebiesbug 是一个设计资源平台，它提供免费的设计资源，包括 Axure 组件库、Sketch、Figma 等其他设计工具的模板。
-            Freebiesbug 是一个设计资源平台，它提供免费的设计资源，包括 Axure 组件库、Sketch、Figma 等其他设计工具的模板。
-            Freebiesbug 是一个设计资源平台，它提供免费的设计资源，包括 Axure 组件库、Sketch、Figma 等其他设计工具的模板。
-            Freebiesbug 是一个设计资源平台，它提供免费的设计资源，包括 Axure 组件库、Sketch、Figma 等其他设计工具的模板。
-            Freebiesbug 是一个设计资源平台，它提供免费的设计资源，包括 Axure 组件库、Sketch、Figma 等其他设计工具的模板。
-            Freebiesbug 是一个设计资源平台，它提供免费的设计资源，包括 Axure 组件库、Sketch、Figma 等其他设计工具的模板。
-            Freebiesbug 是一个设计资源平台，它提供免费的设计资源，包括 Axure 组件库、Sketch、Figma 等其他设计工具的模板。
             Freebiesbug 是一个设计资源平台，它提供免费的设计资源，包括 Axure 组件库、Sketch、Figma 等其他设计工具的模板。
             Freebiesbug 是一个设计资源平台，它提供免费的设计资源，包括 Axure 组件库、Sketch、Figma 等其他设计工具的模板。
         </div>
@@ -46,8 +40,9 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
-const goToCommentPage = () => {
-    router.push({ name: 'comment' }); // 跳转到评论页面
+const goToCommentPage = async () => {
+    await router.push({ name: 'comment' }); // 跳转到评论页面
+    this.isMenuOpen = false
 };
 
 const isFavorite = ref(false); // 是否收藏

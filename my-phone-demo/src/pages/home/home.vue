@@ -1,10 +1,10 @@
 <template>
+
     <div>
+        <tbs />
         <van-tabs v-model:active="active" sticky>
             <van-tab to="" title="关注">
-                <div>
-                    <div></div>
-                </div>
+                <focuscard />
             </van-tab>
             <van-tab title="首页">
                 <homecard />
