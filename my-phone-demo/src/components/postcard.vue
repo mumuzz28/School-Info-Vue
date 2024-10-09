@@ -1,21 +1,25 @@
 <template>
     <div class="post-card">
         <!-- 用户信息 -->
-        <div class="user-info">
-            <van-image class="avatar" round width="40px" height="40px" src="https://example.com/avatar.png" />
-            <div class="user-details">
-                <div class="username">用户名</div>
-                <div class="post-time">1小时前</div>
+        <router-link to="/user" style="text-decoration: none; color: inherit;">
+            <div class="user-info">
+
+                <div style="display: flex; align-items: center;">
+                    <van-image class="avatar" round width="40px" height="40px" src="https://example.com/avatar.png" />
+                    <div class="user-details">
+                        <div class="username">用户名</div>
+                        <div class="post-time">1小时前</div>
+                    </div>
+                </div>
+                <!-- <van-icon z-index="100" size="13px" name="arrow-down" /> -->
             </div>
-            <div class="post-time">1小时前</div>
-        </div>
 
-        <!-- 帖子内容 -->
-        <div class="post-content">
-            Freebiesbug 是一个设计资源平台，它提供免费的设计资源，包括 Axure 组件库、Sketch、Figma 等其他设计工具的模板。
-            Freebiesbug 是一个设计资源平台，它提供免费的设计资源，包括 Axure 组件库、Sketch、Figma 等其他设计工具的模板。
-        </div>
-
+            <!-- 帖子内容 -->
+            <div class="post-content">
+                Freebiesbug 是一个设计资源平台，它提供免费的设计资源，包括 Axure 组件库、Sketch、Figma 等其他设计工具的模板。
+                Freebiesbug 是一个设计资源平台，它提供免费的设计资源，包括 Axure 组件库、Sketch、Figma 等其他设计工具的模板。
+            </div>
+        </router-link>
         <!-- 帖子操作 -->
         <div class="post-actions">
             <div class="action-item" @click="toggleFavorite">
@@ -31,6 +35,7 @@
                 <span>{{ likeCount }}</span>
             </div>
         </div>
+
     </div>
 </template>
 
@@ -67,14 +72,15 @@ const toggleLike = () => {
 <style scoped>
 .post-card {
     background-color: white;
-    padding: 16px;
+    padding: 10px;
     border-radius: 8px;
-    margin-bottom: 16px;
+
 }
 
 .user-info {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     margin-bottom: 10px;
 }
 
@@ -105,6 +111,7 @@ const toggleLike = () => {
 
 .post-actions {
     display: flex;
+    align-items: center;
     justify-content: space-between;
     color: #666;
 }
@@ -118,7 +125,7 @@ const toggleLike = () => {
 
 .action-item span {
     margin-left: 5px;
-    font-size: 14px;
+    font-size: 12px;
 }
 
 .action-item:hover {

@@ -8,6 +8,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     Buttombar: typeof import('./src/components/buttombar.vue')['default']
+    Firecard: typeof import('./src/components/homecom/firecard.vue')['default']
     Focus: typeof import('./src/components/homecom/focus.vue')['default']
     Focuscard: typeof import('./src/components/homecom/focuscard.vue')['default']
     Headimg: typeof import('./src/components/topbar/headimg.vue')['default']
@@ -20,13 +21,16 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     Search: typeof import('./src/components/topbar/search.vue')['default']
     Sourcetopbar: typeof import('./src/components/sourcebar/sourcetopbar.vue')['default']
+    Subject: typeof import('./src/components/homecom/subject.vue')['default']
     Swipe: typeof import('./src/components/homecom/swipe.vue')['default']
     Tabbra: typeof import('./src/components/tabbra/tabbra.vuebra.vue')['default']
     Tbs: typeof import('./src/components/topbar/tbs.vue')['default']
     VanButton: typeof import('vant/es')['Button']
+    VanCard: typeof import('vant/es')['Card']
     VanCell: typeof import('vant/es')['Cell']
     VanCellGroup: typeof import('vant/es')['CellGroup']
     VanCol: typeof import('vant/es')['Col']
+    VanDivider: typeof import('vant/es')['Divider']
     VanField: typeof import('vant/es')['Field']
     VanForm: typeof import('vant/es')['Form']
     VanGrid: typeof import('vant/es')['Grid']
@@ -45,5 +49,6 @@ declare module 'vue' {
     VanTabbar: typeof import('vant/es')['Tabbar']
     VanTabbarItem: typeof import('vant/es')['TabbarItem']
     VanTabs: typeof import('vant/es')['Tabs']
+    VanTag: typeof import('vant/es')['Tag']
   }
 }

@@ -27,10 +27,11 @@
             </div>
 
         </div>
+        <!-- 帖子卡片 -->
         <div class="card-body">
-            <div style=" background-color: white;width: 100%; border-radius: 10px; margin-top: 10px;">
+            <div v-for="i in 10" :key="i"
+                style=" display: flex; background-color: white;width: 100%; border-radius: 10px; margin-top: 10px;">
                 <postcard style="margin-top: 10px;" />
-
             </div>
 
         </div>
@@ -47,8 +48,10 @@ const active = ref(0)
 <style lang="css" scoped>
 .card-body {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
+    /* 水平居中 */
     background-color: #F6F6f7;
     padding-bottom: 0;
     padding: 12px;
