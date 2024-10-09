@@ -51,7 +51,6 @@ const active = ref(0)
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    /* 水平居中 */
     background-color: #F6F6f7;
     padding-bottom: 0;
     padding: 12px;

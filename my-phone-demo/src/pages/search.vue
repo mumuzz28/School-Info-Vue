@@ -1,5 +1,7 @@
 <template>
-    <P>我的</P>
+    <div>
+        我是搜索页
+    </div>
 </template>
 
 <script setup>

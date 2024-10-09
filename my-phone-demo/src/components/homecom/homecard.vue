@@ -3,7 +3,7 @@
         <div class="card-body">
             <div style=" background-color: white;width: 100%; border-radius: 10px; ">
                 <swipe />
-                <div style="border-radius: 10px;height: 60px; ">
+                <div style="border-radius: 10px;height: 65px; ">
                     <van-grid :column-num="5" :border="false">
                         <!-- 图标 1 -->
                         <van-grid-item class="van-grid-item1" icon="fire" icon-color="#d81e06" text="必看" />
@@ -20,6 +20,8 @@
             </div>
 
         </div>
+
+        <!-- 帖子卡片 -->
         <div class="card-body">
             <div v-for="i in 10" :key="i"
                 style=" display: flex; background-color: white;width: 100%; border-radius: 10px; margin-top: 10px;">
@@ -27,7 +29,6 @@
             </div>
 
         </div>
-
 
 
 
@@ -50,6 +51,7 @@ const active2 = ref(0)
     background-color: #F6F6f7;
     padding-bottom: 0;
     padding: 12px;
+
 }
 
 .van-grid-item1,

@@ -1,6 +1,6 @@
 <template>
     <div>
-        已经登录
+        xiaoxiye
     </div>
 </template>
 

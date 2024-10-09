@@ -114,6 +114,7 @@ const toggleLike = () => {
     align-items: center;
     justify-content: space-between;
     color: #666;
+
 }
 
 .action-item {

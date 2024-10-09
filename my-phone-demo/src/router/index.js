@@ -1,4 +1,5 @@
 
+import path from 'path'
 import { createWebHistory, createRouter } from 'vue-router'
 
 
@@ -18,9 +19,19 @@ const routes = [
                 component: () => import('@/pages/source/source.vue'),
             },
             {
-                path: '/main',
-                name: 'main',
-                component: () => import('@/pages/main/main.vue'),
+                path: '/message',
+                name: 'message',
+                component: () => import('@/pages/message/message.vue'),
+            },
+            {
+                path: '/logged',
+                name: 'logged',
+                component: () => import('@/pages/main/logged.vue'),
+            },
+            {
+                path: '/notlogin',
+                name: 'notlogin',
+                component: () => import('@/pages/main/notlogin.vue'),
             },
         ]
     },
@@ -28,6 +39,11 @@ const routes = [
         path: '/user',
         name: 'user',
         component: () => import('@/pages/user/user.vue'),
+    },
+    {
+        path: '/login',
+        name: 'login',
+        component: () => import('@/pages/login.vue'),
     },
     {
         path: '/publish',
@@ -39,7 +55,11 @@ const routes = [
         name: 'comment',
         component: () => import('@/pages/comment.vue'),
     },
-
+    {
+        path: '/search',
+        name: 'search',
+        component: () => import('@/pages/search.vue'),
+    }
 
 ]
 
