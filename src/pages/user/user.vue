@@ -1,5 +1,7 @@
 <template>
-    <P>我的</P>
+    <div>
+        已经登录
+    </div>
 </template>
 
 <script setup>

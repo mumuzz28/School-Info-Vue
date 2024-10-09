@@ -10,13 +10,19 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 const goToUserPage = () => {
-    console.log('goToUserPage')
-    router.push({ path: '/user' })
+    console.log('localStorage.getItem("token"):' + localStorage.getItem('token'))
+    if (localStorage.getItem('token') != null) {
+        router.push({ path: '/user' })
+    } else {
+        router.push({ path: '/login' })
+    }
 }
 </script>
 
 <style lang="css" scoped>
 .img {
     margin-top: 0.2rem;
+    margin-left: 10px;
+
 }
 </style>

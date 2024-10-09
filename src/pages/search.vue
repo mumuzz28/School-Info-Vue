@@ -1,6 +1,6 @@
 <template>
     <div>
-        <p>公共的发表</p>
+        我是搜索页
     </div>
 </template>
 

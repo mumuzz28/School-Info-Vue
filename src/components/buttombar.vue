@@ -3,8 +3,9 @@
         <van-tabbar v-model="active" router>
             <van-tabbar-item replace to="/" icon="home-o">首页</van-tabbar-item>
             <van-tabbar-item replace to="/source" icon="apps-o">资源</van-tabbar-item>
-            <van-tabbar-item replace to="" icon="chat-o">消息</van-tabbar-item>
-            <van-tabbar-item replace to="/main" icon="contact-o">我的</van-tabbar-item>
+            <van-tabbar-item replace to="/message" icon="chat-o">消息</van-tabbar-item>
+            <van-tabbar-item replace :to="isLogin ? { name: 'logged' } : { name: 'notlogin' }"
+                icon="contact-o">我的</van-tabbar-item>
         </van-tabbar>
     </div>
 
@@ -21,7 +22,8 @@ const props = defineProps({
 });
 
 const active = ref(props.initialActive);
-
+// 判断是否登录
+const isLogin = ref(localStorage.getItem('token') != null)
 watch(() => props.initialActive, (newValue) => {
     active.value = newValue;
 });

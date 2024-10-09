@@ -24,7 +24,7 @@
                 </div> -->
 
                 <div class="login-button">
-                    <van-button round block type="primary" native-type="submit" color="#4CAF50">
+                    <van-button round block type="primary" native-type="submit" color="#4CAF50" @click="onLogin">
                         登 录
                     </van-button>
                 </div>
@@ -40,13 +40,46 @@
 <script setup>
 import { ref } from 'vue';
 import { showToast } from 'vant';
-
+import axios from "axios"
+import { useRouter } from 'vue-router';
+const router = useRouter();
 const onClickLeft = () => history.back();
 const onClickRight = () => showToast('按钮');
 const username = ref('')
 const password = ref('')
+
+
+// 创建axios实例
+const instance = axios.create({
+    baseURL: 'http://localhost:8888/api',
+    timeout: 1000,
+    headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+
+    }
+});
 const onSubmit = () => {
-    console.log(username.value, password.value)
+
+    instance.post("/login", {
+        username: username.value,
+        password: password.value
+    }).then(res => {
+        console.log("res:" + res.data)
+        if (res.data != "用户名或密码错误") {
+            localStorage.setItem('token', res.data)
+            showToast("登录成功")
+            router.push("/")
+        } else {
+            showToast("登录失败")
+        }
+    }).catch(err => {
+        console.log("err:" + err)
+    })
+}
+const onLogin = () => {
+    console.log("onLogin")
+    onSubmit()
 }
 
 </script>
