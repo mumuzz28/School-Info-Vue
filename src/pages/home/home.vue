@@ -15,7 +15,9 @@
             <van-tab to="" title="话题">
                 <subject />
             </van-tab>
-            <van-tab to="" title="信息">信息</van-tab>
+            <van-tab to="" title="信息">
+                <xinxi />
+            </van-tab>
         </van-tabs>
     </div>
 

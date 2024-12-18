@@ -5,10 +5,10 @@
             <div class="user-info">
 
                 <div style="display: flex; align-items: center;">
-                    <van-image class="avatar" round width="40px" height="40px" src="https://example.com/avatar.png" />
+                    <van-image class="avatar" round width="40px" height="40px" :src="list.postImg" />
                     <div class="user-details">
-                        <div class="username">用户名</div>
-                        <div class="post-time">1小时前</div>
+                        <div class="username">{{ list.author }}</div>
+                        <div class="post-time">{{ list.createdAt }}</div>
                     </div>
                 </div>
                 <!-- <van-icon z-index="100" size="13px" name="arrow-down" /> -->
@@ -16,8 +16,7 @@
 
             <!-- 帖子内容 -->
             <div class="post-content">
-                Freebiesbug 是一个设计资源平台，它提供免费的设计资源，包括 Axure 组件库、Sketch、Figma 等其他设计工具的模板。
-                Freebiesbug 是一个设计资源平台，它提供免费的设计资源，包括 Axure 组件库、Sketch、Figma 等其他设计工具的模板。
+                {{ list.content }}
             </div>
         </router-link>
         <!-- 帖子操作 -->
@@ -30,7 +29,7 @@
                 <van-icon name="comment-o" color="blue" class="icon comment" size="22px" />
                 <span>{{ commentCount }}</span>
             </div>
-            <div class=" action-item">
+            <div class=" action-item" @click="toggleLike">
                 <van-icon :name="isLiked ? 'good-job' : 'good-job-o'" color="#ff6666" size="22px" />
                 <span>{{ likeCount }}</span>
             </div>
@@ -39,42 +38,101 @@
     </div>
 </template>
 
-<script setup>
-import { ref } from 'vue';
+<script setup lang="ts">
+import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import type { Post } from '../types/postcard';
+
+const props = defineProps<{
+    list: Post;
+}>();
 
 const router = useRouter();
 
-const goToCommentPage = async () => {
-    await router.push({ name: 'comment' }); // 跳转到评论页面
-    this.isMenuOpen = false
-};
-
 const isFavorite = ref(false); // 是否收藏
 const isLiked = ref(false);    // 是否点赞
-const favoriteCount = ref(0);  // 收藏数
-const likeCount = ref(1000);    // 点赞数
-const commentCount = ref(5);   // 评论数
+const isContentLoaded = ref(false); // 内容是否加载完成
+
+// 模拟数据加载
+onMounted(() => {
+    setTimeout(() => {
+        isContentLoaded.value = true;
+    }, 1500); // 假设1.5秒后数据加载完成
+});
+
+// 计算属性，根据 props 数据设置初始值
+const favoriteCount = computed({
+    get: () => props.list.favorCount,
+    set: (value) => {
+        // 如果需要更新父组件的数据，可以在这里发送事件
+        emit('update-favorite-count', value);
+    }
+});
+
+const likeCount = computed({
+    get: () => props.list.likeCount,
+    set: (value) => {
+        emit('update-like-count', value);
+    }
+});
+
+const commentCount = computed({
+    get: () => props.list.commentCount,
+    set: (value) => {
+        emit('update-comment-count', value);
+    }
+});
+
+const emit = defineEmits<{
+    (event: 'update-favorite-count', value: number): void;
+    (event: 'update-like-count', value: number): void;
+    (event: 'update-comment-count', value: number): void;
+}>();
+
+const goToCommentPage = async () => {
+    await router.push({ name: 'comment' }); // 跳转到评论页面
+};
 
 // 切换收藏状态
 const toggleFavorite = () => {
     isFavorite.value = !isFavorite.value;
     favoriteCount.value += isFavorite.value ? 1 : -1;
 };
+
 // 切换点赞状态
 const toggleLike = () => {
     isLiked.value = !isLiked.value;
     likeCount.value += isLiked.value ? 1 : -1;
 };
-
 </script>
 
 <style scoped>
+.post-content {
+
+    margin-bottom: 10px;
+    color: #333;
+    font-size: 14px;
+    display: -webkit-box;
+    /* 使用弹性盒子模型 */
+    -webkit-line-clamp: 3;
+    /* 限制显示的行数 */
+    -webkit-box-orient: vertical;
+    /* 垂直排列 */
+    overflow: hidden;
+    /* 处理溢出内容 */
+    text-overflow: ellipsis;
+    /* 超出部分用省略号表示 */
+}
+
 .post-card {
+    min-width: 332px;
     background-color: white;
     padding: 10px;
     border-radius: 8px;
-
+    max-width: 600px;
+    /* 设置最大宽度 */
+    margin: 0;
+    /* 使卡片居中，并设置左右外边距 */
 }
 
 .user-info {
@@ -114,7 +172,6 @@ const toggleLike = () => {
     align-items: center;
     justify-content: space-between;
     color: #666;
-
 }
 
 .action-item {

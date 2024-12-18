@@ -23,11 +23,11 @@
 
         <!-- 帖子卡片 -->
         <div class="card-body">
-            <div v-for="i in 10" :key="i"
-                style=" display: flex; background-color: white;width: 100%; border-radius: 10px; margin-top: 10px;">
-                <postcard style="margin-top: 10px;" />
-            </div>
-
+            <template v-for="item in dataList" :key="item.id">
+                <div class="postcard-container">
+                    <postcard style="margin-top: 10px" :list="item" />
+                </div>
+            </template>
         </div>
 
 
@@ -37,10 +37,86 @@
 
 </template>
 
-<script setup>
-import { ref } from 'vue';
-const active2 = ref(0)
+
+<script setup lang="ts">
+import { onMounted, ref } from "vue";
+import {
+    getAllPosts,
+    getPostLikes,
+    getPostComment,
+    getPostfavor,
+} from "../../api/postIndex/index";
+import type { Post, dataList } from "../../types/postcard";
+
+const dataList = ref<Post[]>([
+    {
+        id: 0,
+        title: "",
+        content: "",
+        author: "",
+        postImg: "",
+        createdAt: "",
+        updatedAt: "",
+        status: 0,
+        likeCount: 0,
+        commentCount: 0,
+        favorCount: 0,
+    },
+]);
+
+
+
+const getPostInfo = async (): Promise<Post[]> => {
+    try {
+        const post = await getAllPosts();
+        const newArr: (Post | null)[] = await Promise.all(
+            post.map(async (item) => {
+                try {
+                    const likeCount = await getPostLikes(item.id);
+                    const commentCount = await getPostComment(item.id);
+                    const favorCount = await getPostfavor(item.id);
+                    return {
+                        id: item.id,
+                        title: item.title,
+                        content: item.content,
+                        author: item.author,
+                        postImg: item.postImg,
+                        createdAt: item.createdAt,
+                        updatedAt: item.updatedAt,
+                        status: item.status,
+                        likeCount,
+                        commentCount,
+                        favorCount,
+                    };
+                } catch (error) {
+
+                    //console.error(`Error processing post ${item.id}:`, error);
+                    return null;
+                }
+            })
+        );
+        const filteredNewArr = newArr.filter(post => post !== null) as Post[];
+
+        if (process.env.NODE_ENV !== 'production') {
+            console.log(post);
+            console.log(filteredNewArr);
+        }
+
+        dataList.value = filteredNewArr;
+        return filteredNewArr;
+    } catch (error) {
+        console.error('Error fetching posts:', error);
+        throw error;
+    }
+};
+
+onMounted(() => {
+    console.log("postcard mounted");
+    getPostInfo();
+});
 </script>
+
+
 
 <style lang="css" scoped>
 .card-body {
@@ -62,3 +138,105 @@ const active2 = ref(0)
     /* 防止圆角溢出 */
 }
 </style>
+// 获取帖子信息
+const getPostInfo = async () => {
+try {
+const post = await getAllPosts();
+// 通过map将帖子信息转换
+const newArr: Post[] = await Promise.all(
+post.map(async (item) => {
+try {
+// 获取点赞数
+const likeCount = await getPostLikes(item.id);
+// 获取评论数
+const commentCount = await getPostComment(item.id); // 确保获取评论的函数是正确的
+// 获取收藏数
+const favorCount = await getPostFavor(item.id); // 确保获取收藏的函数是正确的
+// 重新组合帖子信息
+return {
+id: item.id,
+title: item.title,
+content: item.content,
+author: item.author,
+postImg: item.postImg,
+createdAt: item.createdAt,
+updatedAt: item.updatedAt,
+status: item.status,
+likeCount,
+commentCount,
+favorCount,
+};
+} catch (error) {
+console.error(`Error processing post ${item.id}:`, error);
+return null; // 返回null或其他默认值
+}
+})
+);
+// 过滤掉处理失败的帖子
+const filteredNewArr = newArr.filter(post => post !== null);
+
+// 移除生产环境下的日志输出
+if (process.env.NODE_ENV !== 'production') {
+console.log(post);
+console.log(filteredNewArr);
+}
+
+// 将数据赋值给dataList
+dataList.value = filteredNewArr;
+return filteredNewArr;
+} catch (error) {
+console.error('Error fetching posts:', error);
+throw error; // 重新抛出异常以便调用者处理
+}
+};
+// 获取帖子信息
+const getPostInfo = async () => {
+try {
+const post = await getAllPosts();
+// 通过map将帖子信息转换
+const newArr: Post[] = await Promise.all(
+post.map(async (item) => {
+try {
+// 获取点赞数
+const likeCount = await getPostLikes(item.id);
+// 获取评论数
+const commentCount = await getPostComment(item.id); // 确保获取评论的函数是正确的
+// 获取收藏数
+const favorCount = await getPostFavor(item.id); // 确保获取收藏的函数是正确的
+// 重新组合帖子信息
+return {
+id: item.id,
+title: item.title,
+content: item.content,
+author: item.author,
+postImg: item.postImg,
+createdAt: item.createdAt,
+updatedAt: item.updatedAt,
+status: item.status,
+likeCount,
+commentCount,
+favorCount,
+};
+} catch (error) {
+console.error(`Error processing post ${item.id}:`, error);
+return null; // 返回null或其他默认值
+}
+})
+);
+// 过滤掉处理失败的帖子
+const filteredNewArr = newArr.filter(post => post !== null);
+
+// 移除生产环境下的日志输出
+if (process.env.NODE_ENV !== 'production') {
+console.log(post);
+console.log(filteredNewArr);
+}
+
+// 将数据赋值给dataList
+dataList.value = filteredNewArr;
+return filteredNewArr;
+} catch (error) {
+console.error('Error fetching posts:', error);
+throw error; // 重新抛出异常以便调用者处理
+}
+};

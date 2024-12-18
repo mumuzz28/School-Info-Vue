@@ -12,7 +12,7 @@
             <h2 class="title">请登录账号</h2>
             <p class="subtitle">请输入密码</p>
 
-            <van-form @submit="onSubmit">
+            <van-form>
                 <van-field v-model="username" placeholder="用户名、邮箱或手机号"
                     :rules="[{ required: true, message: '请输入用户名、邮箱或手机号' }]" />
 
@@ -24,7 +24,7 @@
                 </div> -->
 
                 <div class="login-button">
-                    <van-button round block type="primary" native-type="submit" color="#4CAF50" @click="onLogin">
+                    <van-button round block type="primary" native-type="submit" color="#4CAF50" @click="onSubmit">
                         登 录
                     </van-button>
                 </div>
@@ -38,7 +38,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { showToast } from 'vant';
 import axios from "axios"
 import { useRouter } from 'vue-router';
@@ -51,7 +51,7 @@ const password = ref('')
 
 // 创建axios实例
 const instance = axios.create({
-    baseURL: 'http://localhost:8888/api',
+    baseURL: 'http://localhost:8888',
     timeout: 1000,
     headers: {
         'Content-Type': 'application/json',
@@ -60,27 +60,24 @@ const instance = axios.create({
     }
 });
 const onSubmit = () => {
-
-    instance.post("/login", {
+    instance.post("/login/byPassword", {
         username: username.value,
         password: password.value
     }).then(res => {
-        console.log("res:" + res.data)
-        if (res.data != "用户名或密码错误") {
-            localStorage.setItem('token', res.data)
-            showToast("登录成功")
-            router.push("/")
+        if (res.data.code == 200) {
+            localStorage.setItem('token', res.data.data)
+            showToast(res.data.msg)
+            location.reload(onMounted(() => {
+                router.push({ path: '/' })
+            }))
         } else {
-            showToast("登录失败")
+            showToast("登陆失败")
         }
     }).catch(err => {
         console.log("err:" + err)
     })
 }
-const onLogin = () => {
-    console.log("onLogin")
-    onSubmit()
-}
+
 
 </script>
 

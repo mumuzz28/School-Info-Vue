@@ -12,7 +12,7 @@
                         style="border: none; margin-right: 10px;">更多</van-button>
                 </div>
                 <div class="hot-list" style=" padding: 10px; padding-top: 0px;">
-                    <div v-for="(data, index) in data" :key="data.name"
+                    <div v-for="(data, index) in data" :key="index"
                         style="display: flex;justify-content: space-between;font-size: 12px;font-weight: 200;margin-left: 10px;margin-top: 3px;"
                         @click="handleClick(data.name)">
                         <div style="display: flex;align-items: center;">

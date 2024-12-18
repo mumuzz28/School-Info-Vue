@@ -21,6 +21,8 @@ export default defineConfig({
   server: {
     host: "0.0.0.0", // 监听所有 IP 地址
     port: 8080, // 可自定义端口
+    proxy: {
+  },
   },
 
   // ↓解析配置
@@ -31,3 +33,6 @@ export default defineConfig({
     },
   },
 });
+export {
+  vite_config_default as default
+};

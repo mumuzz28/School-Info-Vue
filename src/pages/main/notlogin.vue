@@ -3,7 +3,7 @@
     <div class="top-bar">
 
         <div style="display: flex; justify-content: space-around;">
-            < 没有登录 <van-icon @click="toSearch" style="font-size:x-large;margin-right: 0.3rem;margin-top:0.4rem ;"
+            没有登录 <van-icon @click="toSearch" style="font-size:x-large;margin-right: 0.3rem;margin-top:0.4rem ;"
                 name="search" />
             <!-- 右边的图标 -->
             <publishicon />
@@ -42,6 +42,14 @@ const toSearch = () => {
     } else {
         showToast('请先登录')
     }
+}
+
+const logout = () => {
+    localStorage.removeItem('token');
+    router.push('/login');
+    onMounted(() => {
+        router.push({ path: '/' })
+    })
 }
 </script>
 

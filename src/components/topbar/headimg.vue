@@ -1,16 +1,15 @@
 <template>
     <div class="img" @click="goToUserPage">
         <van-image round width="1rem" height="1rem" src="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg" />
+
     </div>
 </template>
 
 <script setup>
 import { useRouter } from 'vue-router'
-
 const router = useRouter()
 
 const goToUserPage = () => {
-    console.log('localStorage.getItem("token"):' + localStorage.getItem('token'))
     if (localStorage.getItem('token') != null) {
         router.push({ path: '/user' })
     } else {
