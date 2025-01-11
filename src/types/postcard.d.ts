@@ -1,23 +1,26 @@
-import type { GetAllPostsResult } from "@/api/postIndex/index.d";
+import type { GetAllPostsResult } from '@/api/postIndex/index.d'
 
-export interface dataList extends GetAllPostsResult {
-  likeCount: number;
-  commentCount: number;
-  favorCount: number;
+export interface dataList {
+  postId: number
+  userId: number
+  category: string
+  username: string
+  city: string | null
+  avatarUrl: string | null
+  title: string
+  content: string
+  postImg: string
+  status: number
+  favorCount: number
+  commentCount: number
+  likeCount: number
+  createdAt: string
 }
-// ../../types/postcard.ts
-export interface Post {
-  id: number;
-  title: string;
-  content: string;
-  author: string;
-  postImg: string;
-  createdAt: string;
-  updatedAt: string;
-  status: number;
-  likeCount: number;
-  commentCount: number;
-  favorCount: number;
+export interface FavorPostParams {
+  userId: number
+  postId: number
 }
-
-export type dataList = Post[];
+export interface LikePostParams {
+  userId: number
+  postId: number
+}

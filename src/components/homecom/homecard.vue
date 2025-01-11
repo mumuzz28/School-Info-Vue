@@ -1,5 +1,8 @@
 <template>
-    <div style="overflow:hidden;">
+
+    <van-pull-refresh v-model="loading" @refresh="onRefresh">
+
+
         <div class="card-body">
             <div style=" background-color: white;width: 100%; border-radius: 10px; ">
                 <swipe />
@@ -22,103 +25,127 @@
         </div>
 
         <!-- 帖子卡片 -->
-        <div class="card-body">
-            <template v-for="item in dataList" :key="item.id">
+        <div class="card-body" style="margin-bottom: 0.5rem;">
+            <!-- <template v-for="item in dataList.slice(0, 60)" :key="item.id">
+
                 <div class="postcard-container">
-                    <postcard style="margin-top: 10px" :list="item" />
+                    <keep-alive>
+                        <postcard style="margin-top: 10px" :list="item" />
+                    </keep-alive>
                 </div>
-            </template>
+            </template> -->
+            <van-list v-model:loading="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
+                <template v-for="item in list" :key="item.id">
+                    <div class="postcard-container">
+                        <keep-alive>
+                            <postcard style="margin-top: 10px" :list="item" />
+                        </keep-alive>
+                    </div>
+                </template>
+            </van-list>
+
         </div>
 
+        <backtop />
 
-
-    </div>
-
-
+    </van-pull-refresh>
 </template>
 
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+
+import { on } from "events";
+import { showToast } from "vant";
+import { compile, onMounted, ref, } from "vue";
 import {
     getAllPosts,
-    getPostLikes,
-    getPostComment,
-    getPostfavor,
+    likePost,
+    favorPost
 } from "../../api/postIndex/index";
-import type { Post, dataList } from "../../types/postcard";
+import type { dataList } from "../../types/postcard";
+const dataList = ref<dataList[]>([]);
+const list = ref<dataList[]>([]);
+const finished = ref(false);
+const count = ref(0);
+const loading = ref(false);
 
-const dataList = ref<Post[]>([
-    {
-        id: 0,
-        title: "",
-        content: "",
-        author: "",
-        postImg: "",
-        createdAt: "",
-        updatedAt: "",
-        status: 0,
-        likeCount: 0,
-        commentCount: 0,
-        favorCount: 0,
-    },
-]);
-
-
-
-const getPostInfo = async (): Promise<Post[]> => {
+const getPostInfo = async (): Promise<dataList[]> => {
     try {
         const post = await getAllPosts();
-        const newArr: (Post | null)[] = await Promise.all(
-            post.map(async (item) => {
-                try {
-                    const likeCount = await getPostLikes(item.id);
-                    const commentCount = await getPostComment(item.id);
-                    const favorCount = await getPostfavor(item.id);
-                    return {
-                        id: item.id,
-                        title: item.title,
-                        content: item.content,
-                        author: item.author,
-                        postImg: item.postImg,
-                        createdAt: item.createdAt,
-                        updatedAt: item.updatedAt,
-                        status: item.status,
-                        likeCount,
-                        commentCount,
-                        favorCount,
-                    };
-                } catch (error) {
-
-                    //console.error(`Error processing post ${item.id}:`, error);
-                    return null;
-                }
-            })
-        );
-        const filteredNewArr = newArr.filter(post => post !== null) as Post[];
-
-        if (process.env.NODE_ENV !== 'production') {
-            console.log(post);
-            console.log(filteredNewArr);
-        }
-
-        dataList.value = filteredNewArr;
-        return filteredNewArr;
+        console.log(post);
+        dataList.value = post;
+        return post;
     } catch (error) {
         console.error('Error fetching posts:', error);
         throw error;
     }
-};
+}
 
 onMounted(() => {
-    console.log("postcard mounted");
-    getPostInfo();
+    console.log("获取所有的帖子信息");
+    getPostInfo().then(() => {
+        onLoad();
+    });
 });
+/**
+ * 加载数据函数
+ * 
+ * 该函数用于模拟数据加载过程它会在一段时间后从一个数据列表中取出一部分数据，
+ * 更新到当前显示的列表中，并调整计数器和加载状态标志该函数主要用于无限滚动或
+ * 分页加载场景,异步数据加载过程.
+ */
+const onLoad = () => {
+
+    // 异步加载数据的过程，900毫秒后执行加载逻辑
+    setTimeout(() => {
+        list.value = list.value.concat(dataList.value.slice(count.value, count.value + 10));
+        count.value += 10;
+        if (count.value >= dataList.value.length) {
+            finished.value = true;
+        }
+        loading.value = false;
+    }, 900);
+}
+
+
+// 下拉刷新
+const REFRESH_DELAY = 200; // 定义刷新延迟时间
+const REFRESH_SUCCESS_MESSAGE = '刷新成功'; // 定义刷新成功的提示信息
+
+const onRefresh = () => {
+    if (count.value <= 0) { // 处理 count.value 为负数的情况
+        loading.value = false;
+        return;
+    }
+
+    try {
+        setTimeout(() => {
+            try {
+                showToast(REFRESH_SUCCESS_MESSAGE);
+            } finally {
+                loading.value = false; // 确保无论如何都会关闭加载状态
+            }
+        }, REFRESH_DELAY);
+    } catch (error) {
+        console.error('刷新失败:', error); // 记录错误日志
+        loading.value = false; // 确保无论如何都会关闭加载状态
+    }
+};
+
+
+
+
+
 </script>
 
 
 
 <style lang="css" scoped>
+.scroll-container {
+    height: 100vh;
+    overflow-y: auto;
+}
+
 .card-body {
     display: flex;
     flex-direction: column;
@@ -127,7 +154,6 @@ onMounted(() => {
     background-color: #F6F6f7;
     padding-bottom: 0;
     padding: 12px;
-
 }
 
 .van-grid-item1,
@@ -137,106 +163,11 @@ onMounted(() => {
     overflow: hidden;
     /* 防止圆角溢出 */
 }
+
+.back-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 10000;
+}
 </style>
-// 获取帖子信息
-const getPostInfo = async () => {
-try {
-const post = await getAllPosts();
-// 通过map将帖子信息转换
-const newArr: Post[] = await Promise.all(
-post.map(async (item) => {
-try {
-// 获取点赞数
-const likeCount = await getPostLikes(item.id);
-// 获取评论数
-const commentCount = await getPostComment(item.id); // 确保获取评论的函数是正确的
-// 获取收藏数
-const favorCount = await getPostFavor(item.id); // 确保获取收藏的函数是正确的
-// 重新组合帖子信息
-return {
-id: item.id,
-title: item.title,
-content: item.content,
-author: item.author,
-postImg: item.postImg,
-createdAt: item.createdAt,
-updatedAt: item.updatedAt,
-status: item.status,
-likeCount,
-commentCount,
-favorCount,
-};
-} catch (error) {
-console.error(`Error processing post ${item.id}:`, error);
-return null; // 返回null或其他默认值
-}
-})
-);
-// 过滤掉处理失败的帖子
-const filteredNewArr = newArr.filter(post => post !== null);
-
-// 移除生产环境下的日志输出
-if (process.env.NODE_ENV !== 'production') {
-console.log(post);
-console.log(filteredNewArr);
-}
-
-// 将数据赋值给dataList
-dataList.value = filteredNewArr;
-return filteredNewArr;
-} catch (error) {
-console.error('Error fetching posts:', error);
-throw error; // 重新抛出异常以便调用者处理
-}
-};
-// 获取帖子信息
-const getPostInfo = async () => {
-try {
-const post = await getAllPosts();
-// 通过map将帖子信息转换
-const newArr: Post[] = await Promise.all(
-post.map(async (item) => {
-try {
-// 获取点赞数
-const likeCount = await getPostLikes(item.id);
-// 获取评论数
-const commentCount = await getPostComment(item.id); // 确保获取评论的函数是正确的
-// 获取收藏数
-const favorCount = await getPostFavor(item.id); // 确保获取收藏的函数是正确的
-// 重新组合帖子信息
-return {
-id: item.id,
-title: item.title,
-content: item.content,
-author: item.author,
-postImg: item.postImg,
-createdAt: item.createdAt,
-updatedAt: item.updatedAt,
-status: item.status,
-likeCount,
-commentCount,
-favorCount,
-};
-} catch (error) {
-console.error(`Error processing post ${item.id}:`, error);
-return null; // 返回null或其他默认值
-}
-})
-);
-// 过滤掉处理失败的帖子
-const filteredNewArr = newArr.filter(post => post !== null);
-
-// 移除生产环境下的日志输出
-if (process.env.NODE_ENV !== 'production') {
-console.log(post);
-console.log(filteredNewArr);
-}
-
-// 将数据赋值给dataList
-dataList.value = filteredNewArr;
-return filteredNewArr;
-} catch (error) {
-console.error('Error fetching posts:', error);
-throw error; // 重新抛出异常以便调用者处理
-}
-};

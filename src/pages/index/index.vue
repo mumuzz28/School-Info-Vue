@@ -1,6 +1,7 @@
 <template>
     <keep-alive>
         <div>
+
             <router-view v-slot="{ Component }">
                 <transition>
                     <keep-alive>
@@ -8,7 +9,8 @@
                     </keep-alive>
                 </transition>
             </router-view>
-            <buttombar />
+            <bottombar />
+
         </div>
     </keep-alive>
 

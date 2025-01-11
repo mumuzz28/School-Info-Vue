@@ -1,11 +1,11 @@
-import { defineConfig } from "vite";
-import vue from "@vitejs/plugin-vue";
-import AutoImport from "unplugin-auto-import/vite";
-import Components from "unplugin-vue-components/vite";
-import { VantResolver } from "@vant/auto-import-resolver";
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import AutoImport from 'unplugin-auto-import/vite'
+import Components from 'unplugin-vue-components/vite'
+import { VantResolver } from '@vant/auto-import-resolver'
 //配置别名
-import { resolve } from "path";
-const pathSrc = resolve(__dirname, "src");
+import { resolve } from 'path'
+const pathSrc = resolve(__dirname, 'src')
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -19,20 +19,23 @@ export default defineConfig({
     }),
   ],
   server: {
-    host: "0.0.0.0", // 监听所有 IP 地址
+    host: '0.0.0.0', // 监听所有 IP 地址
     port: 8080, // 可自定义端口
     proxy: {
-  },
+      '/api': {
+        target: 'http://192.168.0.107:8888',
+        changeOrigin: true,
+        pathRewrite: { '^/api': '' },
+      },
+    },
   },
 
   // ↓解析配置
   resolve: {
     alias: {
       //配置路径别名
-      "@": pathSrc,
+      '@': pathSrc,
     },
   },
-});
-export {
-  vite_config_default as default
-};
+})
+export { vite_config_default as default }

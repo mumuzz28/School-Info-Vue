@@ -1,25 +1,28 @@
 <template>
 
     <div>
+        <!-- 头部导航 -->
         <tbs />
         <van-tabs v-model:active="active" sticky>
-            <van-tab to="" title="关注">
+            <van-tab title="关注">
                 <focuscard />
             </van-tab>
             <van-tab title="首页">
                 <homecard />
             </van-tab>
-            <van-tab to="" title="热门">
+            <van-tab title="热门">
                 <firecard />
             </van-tab>
-            <van-tab to="" title="话题">
+            <van-tab title="话题">
                 <subject />
             </van-tab>
-            <van-tab to="" title="信息">
+            <van-tab title="信息">
                 <xinxi />
             </van-tab>
         </van-tabs>
+
     </div>
+
 
 </template>
 
@@ -27,6 +30,9 @@
 import { ref } from 'vue';
 
 const active = ref(1);
+
+
+
 </script>
 
 <style lang="css" scoped></style>

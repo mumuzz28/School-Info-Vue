@@ -1,13 +1,19 @@
 <template>
     <div class="img" @click="goToUserPage">
-        <van-image round width="1rem" height="1rem" src="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg" />
+        <van-image round width="1rem" height="1rem" :src="userStore.userInfo.avatarUrl" />
 
     </div>
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router'
-const router = useRouter()
+import router from '@/router';
+import { useUserStore } from '@/store/userstore';
+const userStore = useUserStore()
+
+console.log(userStore.userInfo.avatarUrl)
+
+
+
 
 const goToUserPage = () => {
     if (localStorage.getItem('token') != null) {

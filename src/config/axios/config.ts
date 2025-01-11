@@ -1,4 +1,4 @@
-import { AxiosHeaders } from "axios"
+import { AxiosHeaders } from 'axios'
 
 const config: {
   base_url: string
@@ -9,7 +9,7 @@ const config: {
   /**
    * api请求基础路径
    */
- base_url: import.meta.env.VITE_API_URL,
+  base_url: import.meta.env.VITE_API_URL,
   /**
    * 接口成功返回状态码
    */
@@ -24,8 +24,11 @@ const config: {
    * 默认接口请求类型
    * 可选值：application/x-www-form-urlencoded multipart/form-data
    */
-  default_headers: "application/json",
+  //default_headers: 'multipart/form-data',
 }
 
+export const setCustomHeaders = (headers: Record<string, string>) => {
+  config.default_headers = new AxiosHeaders(headers)
+}
 
 export { config }

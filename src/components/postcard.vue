@@ -5,9 +5,9 @@
             <div class="user-info">
 
                 <div style="display: flex; align-items: center;">
-                    <van-image class="avatar" round width="40px" height="40px" :src="list.postImg" />
+                    <van-image class="avatar" round width="40px" height="40px" :src="list.avatarUrl" />
                     <div class="user-details">
-                        <div class="username">{{ list.author }}</div>
+                        <div class="username">{{ list.username }}</div>
                         <div class="post-time">{{ list.createdAt }}</div>
                     </div>
                 </div>
@@ -18,20 +18,26 @@
             <div class="post-content">
                 {{ list.content }}
             </div>
+            <!-- 帖子内容 -->
+            <div class="post-img" v-if="list.postImg && list.postImg.length > 0">
+                <!-- 帖子图片 -->
+                <van-image v-for="(img, index) in list.postImg.slice(0, list.postImg.length)" :key="index" :src="img"
+                    fit="cover" class="img-item" />
+            </div>
         </router-link>
         <!-- 帖子操作 -->
         <div class="post-actions">
             <div class="action-item" @click="toggleFavorite">
                 <van-icon :name="isFavorite ? 'star' : 'star-o'" color="#ffcc00" size="22px" />
-                <span>{{ favoriteCount }}</span>
+                <span>{{ list.favorCount }}</span>
             </div>
             <div class="action-item" @click="goToCommentPage">
                 <van-icon name="comment-o" color="blue" class="icon comment" size="22px" />
-                <span>{{ commentCount }}</span>
+                <span>{{ list.commentCount }}</span>
             </div>
             <div class=" action-item" @click="toggleLike">
                 <van-icon :name="isLiked ? 'good-job' : 'good-job-o'" color="#ff6666" size="22px" />
-                <span>{{ likeCount }}</span>
+                <span>{{ list.likeCount }}</span>
             </div>
         </div>
 
@@ -39,71 +45,85 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+//不检查类型
+// @ts-nocheck
+import { ref, } from 'vue';
 import { useRouter } from 'vue-router';
-import type { Post } from '../types/postcard';
-
+import type { dataList, FavorPostParams } from '../types/postcard';
+import { defineProps } from 'vue';
+import { favorPost, likePost } from '../api/postIndex';
+import { useUserStore } from '../store/userstore';
+import { log } from 'console';
+import { showToast } from 'vant';
+const userStore = useUserStore();
 const props = defineProps<{
-    list: Post;
+    list: dataList;
 }>();
 
 const router = useRouter();
 
+const { list } = props;
 const isFavorite = ref(false); // 是否收藏
 const isLiked = ref(false);    // 是否点赞
-const isContentLoaded = ref(false); // 内容是否加载完成
 
-// 模拟数据加载
-onMounted(() => {
-    setTimeout(() => {
-        isContentLoaded.value = true;
-    }, 1500); // 假设1.5秒后数据加载完成
-});
-
-// 计算属性，根据 props 数据设置初始值
-const favoriteCount = computed({
-    get: () => props.list.favorCount,
-    set: (value) => {
-        // 如果需要更新父组件的数据，可以在这里发送事件
-        emit('update-favorite-count', value);
-    }
-});
-
-const likeCount = computed({
-    get: () => props.list.likeCount,
-    set: (value) => {
-        emit('update-like-count', value);
-    }
-});
-
-const commentCount = computed({
-    get: () => props.list.commentCount,
-    set: (value) => {
-        emit('update-comment-count', value);
-    }
-});
-
-const emit = defineEmits<{
-    (event: 'update-favorite-count', value: number): void;
-    (event: 'update-like-count', value: number): void;
-    (event: 'update-comment-count', value: number): void;
-}>();
-
+// 跳转到评论页面
 const goToCommentPage = async () => {
-    await router.push({ name: 'comment' }); // 跳转到评论页面
+    await router.push({ name: 'comment' });
 };
+// 获取帖子状态
+const fetchPostStatus = async () => {
+    try {
+        const status = await getPostStatus(list.postId);
+        isFavorite.value = status.isFavorited;
+        isLiked.value = status.isLiked;
+    } catch (error) {
+        console.error('获取帖子状态失败:', error);
+    }
+};
+
 
 // 切换收藏状态
 const toggleFavorite = () => {
-    isFavorite.value = !isFavorite.value;
-    favoriteCount.value += isFavorite.value ? 1 : -1;
+
+    // 获取当前的 postId 和 userId
+    const favorPostParams = {
+        userId: userStore.userInfo.id,
+        postId: list.postId,
+
+    }
+    const getFavorPost = async (data: FavorPostParams): Promise<string> => {
+        try {
+
+            await favorPost(favorPostParams).then(res => {
+                if (res.data == 1) {
+                    isFavorite.value = !isFavorite.value;
+                    list.favorCount += isFavorite.value ? 1 : -1;
+                    showToast(res.msg);
+                } else {
+                    console.log('取消收藏:', response);
+                    showToast(res.msg);
+                }
+            });
+
+
+        } catch (error) {
+            console.error('Error favor post:', error);
+            throw error;
+        }
+    }
+    getFavorPost(favorPostParams);
+
 };
 
 // 切换点赞状态
 const toggleLike = () => {
     isLiked.value = !isLiked.value;
-    likeCount.value += isLiked.value ? 1 : -1;
+    list.likeCount += isLiked.value ? 1 : -1;
+
+
 };
+
+
 </script>
 
 <style scoped>
@@ -122,6 +142,21 @@ const toggleLike = () => {
     /* 处理溢出内容 */
     text-overflow: ellipsis;
     /* 超出部分用省略号表示 */
+}
+
+.post-img {
+    display: flex;
+    justify-content: space-between;
+}
+
+.img-item {
+    width: 32%;
+    /* 固定大小 */
+    height: 100px;
+    /* 固定高度 */
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 5px;
 }
 
 .post-card {

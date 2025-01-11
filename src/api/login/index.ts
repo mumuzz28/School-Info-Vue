@@ -1,7 +1,7 @@
 import request from "@/config/axios";
 import type { LoginParams, LoginResult } from "./index.d";
 
-// 登录
+// 密码登录
 export const login = (data: LoginParams): Promise<LoginResult> => {
   return request.post({
     url: "/login/byPassword",
@@ -9,10 +9,21 @@ export const login = (data: LoginParams): Promise<LoginResult> => {
   });
 };
 
+//获取验证码
+export const getCode = (phoneNumber: string): Promise<string> => {
+  return request.get({
+    url: "/login/sendCode",
+    params: {
+      phoneNumber,
+    },
+  });
+};
 
-// 退出登录
-export const logout = (): Promise<LoginResult> => {
+
+// 验证码登录
+export const loginByCode = (data: LoginParams): Promise<LoginResult> => {
   return request.post({
-    url: "/logout",
+    url: "/login/byPhone",
+    data,
   });
 };

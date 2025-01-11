@@ -6,14 +6,19 @@
 </template>
 
 <script setup>
+import { showToast } from 'vant';
 import { defineComponent } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
 const toPublish = () => {
-    // 这里是方法的具体实现
-    router.push("/publish");
-    console.log("toPublish")
+    if (localStorage.getItem('token') != null) {
+        router.push({ path: '/publish' })
+        console.log("toPublish")
+    } else {
+        showToast("请先登陆")
+    }
+
 }// 添加分号
 
 </script>
